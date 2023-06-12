@@ -7,15 +7,17 @@ let [postTitle, setPostTitle] = useState(['남자 코트 추천', '강남 우동
 let [likeCnt, setLikeCnt] = useState([0,0,0]);
 let [modal, setModal] = useState(false);
 let [curPost, setCurPost] = useState();
-
-
-function likeUp(like){
-  setLikeCnt(like);
-}
+let [inpVal, setInpVal] = useState();
 
 function selectPost(selected){
   setCurPost(selected)
   modal === true ? setModal(false) : setModal(true)
+}
+
+function delPost(i){
+  let copy = [...postTitle]
+  copy.splice(i, 1);
+  setPostTitle(copy);
 }
 
 
@@ -24,25 +26,23 @@ function selectPost(selected){
       <div className='black-nav'>
         <h4>reactBlog</h4>
       </div>
-      <button onClick={() => {
-        let copy = [...postTitle];
-        copy[0] = '여자 코트 추천';
-        setPostTitle(copy)
-      }}>글수정</button>
       {
         postTitle.map(function(a, i){
           return (
             <div className='list' key={i}>
               <h4 onClick={() => {selectPost(a)}}>
-                {postTitle[i] } 
-                <span onClick={() =>{
+                {postTitle[i]} 
+              </h4>
+              <span onClick={() =>{
                   let copy = [...likeCnt]
                   copy[i] = copy[i] + 1;
                   setLikeCnt(copy)
                 }
                 }>👍</span> {likeCnt[i]} 
-              </h4>
               <p>2월 17일 발행</p>
+              <button type="button" onClick={()=>{
+                delPost(i)
+                }}>삭제</button>
             </div>
           )
         })
@@ -50,6 +50,12 @@ function selectPost(selected){
       {
         modal === true ? <Modal postTitle={curPost}></Modal> : null
       }
+      <input type="text" onChange={(e) => {setInpVal(e.target.value) }}/>
+      <button type="button" onClick={() => {
+        let copy = [...postTitle];
+        copy.unshift(inpVal);
+        setPostTitle(copy);
+      }}>글 발행</button>
     </div>
   );
 }
